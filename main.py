@@ -22,6 +22,7 @@ app.add_middleware(
 
 modelo = joblib.load("modelo.pkl")
 lags = joblib.load("lags.pkl")
+scaler = joblib.load("scaler.pkl")
 
 
 def obtener_datos():
@@ -58,19 +59,21 @@ def entrenar_modelo(df):
 @app.get("/predict/7days")
 def predict_week():
 
-    ventana = lags.copy()
+    entana = lags.copy()
     predicciones = []
 
     for _ in range(7):
         y_pred = modelo.predict(ventana.reshape(1, -1))[0]
-
-        predicciones.append(float(round(y_pred, 2)))
-
+        predicciones.append(y_pred)
         ventana = np.roll(ventana, -1)
         ventana[-1] = y_pred
 
+    # Volver a escala real
+    predicciones_real = scaler.inverse_transform(np.array(predicciones).reshape(-1,1)).flatten()
+
+    # Retornar como JSON
     return {
-        "forecast_7d": predicciones
+        "forecast_7d": [float(round(x, 2)) for x in predicciones_real]
     }
 
 
