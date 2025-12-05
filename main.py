@@ -14,7 +14,7 @@ app = FastAPI(title="TRM Forecast API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],   # Permite todas las URLs (incluye localhost y Cloudflare)
+    allow_origins=["*"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -59,7 +59,7 @@ def entrenar_modelo(df):
 @app.get("/predict/7days")
 def predict_week():
 
-    entana = lags.copy()
+    ventana = lags.copy()
     predicciones = []
 
     for _ in range(7):
