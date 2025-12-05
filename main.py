@@ -4,7 +4,7 @@ import pandas as pd
 import joblib
 import requests
 from sklearn.linear_model import LinearRegression
-
+from fastapi.middleware.cors import CORSMiddleware
 
 # Carga de datos
 DATA_URL = "https://www.datos.gov.co/resource/mcec-87by.csv?$limit=10000"
@@ -12,6 +12,13 @@ LOOKBACK = 5
 
 app = FastAPI(title="TRM Forecast API")
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],   # Permite todas las URLs (incluye localhost y Cloudflare)
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 modelo = joblib.load("modelo.pkl")
 lags = joblib.load("lags.pkl")
